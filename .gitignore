@@ -102,4 +102,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
+**/generated/
+/generated
+/generated/prisma

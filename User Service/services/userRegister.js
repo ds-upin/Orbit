@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const prisma = require('../prismaClient');
+const { produceEmailCode } = require('../producer');
 
 function generateSixDigitNumber() {
     return Math.floor(100000 + Math.random() * 900000);
@@ -35,7 +36,7 @@ const userRegister = async (call, callback) => {
             user_id: result.id,
             status: 201,
         });
-
+        await produceEmailCode(email, verificationCode, name);
     } catch (error) {
         console.error('Error during user registration:', error);
         if (error.code === 'P2002') {

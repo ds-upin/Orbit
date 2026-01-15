@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+  output = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model buses {
+  id           Int         @id @default(autoincrement())
+  manufacturer String?     @db.VarChar(100)
+  bus_number   String?     @unique @db.VarChar(50)
+  bus_type     String?     @db.VarChar(100)
+  created_at   DateTime?   @default(now()) @db.Timestamptz(6)
+  model_id     Int?
+  models       models?     @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schedules    schedules[]
+}
+
+model models {
+  id         Int       @id @default(autoincrement())
+  model_name String?   @db.VarChar(100)
+  created_at DateTime? @default(now()) @db.Timestamptz(6)
+  buses      buses[]
+  seats      seats[]
+}
+
+model routes {
+  id          Int         @id @default(autoincrement())
+  source      String?     @db.VarChar(200)
+  destination String?     @db.VarChar(200)
+  distance    Int?
+  created_at  DateTime?   @default(now()) @db.Timestamptz(6)
+  schedules   schedules[]
+
+  @@unique([source, destination])
+}
+
+model schedules {
+  id             Int       @id @default(autoincrement())
+  scheduled_date DateTime? @db.Date
+  departure_time DateTime? @db.Timestamptz(6)
+  arrival_time   DateTime? @db.Timestamptz(6)
+  fare           Int?
+  status         String?   @db.VarChar(50)
+  created_at     DateTime? @default(now()) @db.Timestamptz(6)
+  bus_id         Int?
+  route_id       Int?
+  buses          buses?    @relation(fields: [bus_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  routes         routes?   @relation(fields: [route_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model seats {
+  id          Int       @id @default(autoincrement())
+  seat_number String?   @db.VarChar(50)
+  created_at  DateTime? @default(now()) @db.Timestamptz(6)
+  model_id    Int?
+  models      models?   @relation(fields: [model_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([seat_number, model_id])
+}

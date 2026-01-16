@@ -72,6 +72,7 @@ message ReqAddSeat {
 message ResAddSeat {
     int32 status = 1;
     string msg = 2;
+    int32 seat_id = 3;
 }
 
 message ReqDeleteSeat {
@@ -86,6 +87,10 @@ message ResDeleteSeat {
 
 // -------------------------Model-----------------------
 
+message Model {
+    int32 model_id = 1;
+    string model_name = 2;
+}
 message ReqGetModels {
     int32 limit = 1;
     int32 skip = 2;
@@ -94,16 +99,20 @@ message ReqGetModels {
 message ResGetModels {
     int32 status = 1;
     string msg = 2;
+    repeated Model models = 3;
 }
 
 message ReqGetModel {
     int32 model_id = 1;
 }
-
+message Seat {
+    int32 seat_id = 1;
+    string seat_name = 2;
+}
 message ResGetModel {
     int32 status = 1;
     string msg = 2;
-    repeated string seat_number = 3;
+    repeated Seat seats = 3;
 }
 
 message ReqAddModel {
@@ -113,6 +122,7 @@ message ReqAddModel {
 message ResAddModel {
     int32 status = 1;
     string msg = 2;
+    int32 model_id = 3;
 }
 
 // -------------------------------Route-------------------------
@@ -138,7 +148,8 @@ message ResGetRoute {
     string msg = 2;
     string source = 3;
     string destination = 4;
-    int32 route_id = 5;
+    int32 distance = 5;
+    int32 route_id = 6;
 }
 
 // ------------------------------Schedules------------------------  
@@ -194,7 +205,7 @@ message ResGetSchedule {
     int32 fare = 4;
     int32 bus_id = 5;
     int32 route_id = 6;
-    string status = 7;
+    int32 status = 7;
     int32 schedule_id = 8;
 }
 
@@ -220,6 +231,28 @@ message ResGetSchedules {
     repeated Schedule schedules = 3;
 }
 
+message Route {
+    int32 id = 1;
+    string source = 2;
+    string destination = 3;
+    int32 distance = 4;
+}
+message GetScheduledBusesRequest {
+    int32 limit = 1;
+    int32 skip = 2;
+}
+
+message GetScheduledBusesByRouteRequest {
+    string source = 1;
+    string destination = 2;
+    int32 limit = 3;
+    int32 skip = 4;
+}
+message GetScheduledBusesResponse {
+    int32 status = 1;
+    string msg = 2;
+    repeated Schedule schedules = 3;
+}
 
 // ========================= Services =========================
 
@@ -250,4 +283,6 @@ service BusService {
     rpc DeleteSchedule(ReqDeleteSchedule) returns (ResDeleteSchedule);
     rpc GetSchedule(ReqGetSchedule) returns (ResGetSchedule);
     rpc GetSchedules(ReqGetSchedules) returns (ResGetSchedules);
+    rpc GetScheduledBuses(GetScheduledBusesRequest) returns (GetScheduledBusesResponse);
+    rpc GetScheduledBusesByRoute(GetScheduledBusesByRouteRequest) returns (GetScheduledBusesResponse);
 }

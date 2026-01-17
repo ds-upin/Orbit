@@ -3,7 +3,7 @@ const prisma = require('../prismaClient');
 const addRoute = async (call, callback) => {
     const { source, destination, distance } = call.request;
 
-    if (!source || !destination || !distance || typeof source !== 'string' || typeof destination !== 'string' || typeof distance !== 'number') {
+    if (!source || !destination || distance === undefined || typeof source !== 'string' || typeof destination !== 'string' || typeof distance !== 'number') {
         callback(null, {
             route_id: 0,
             status: 400,
@@ -12,18 +12,38 @@ const addRoute = async (call, callback) => {
         return;
     }
 
-    try {
-        const result = await prisma.$queryRaw`
-            INSERT INTO routes (source, destination, distance)
-            VALUES (${source}, ${destination}, ${distance})
-            RETURNING id
-        `;
+    const trimmedSource = source.trim();
+    const trimmedDestination = destination.trim();
 
-        if (result[0] && result[0].id) {
+    try {
+        const result = await prisma.$transaction(async (tx) => {
+            const existing = await tx.routes.findFirst({
+                where: {
+                    source: trimmedSource,
+                    destination: trimmedDestination
+                }
+            });
+
+            if (existing) {
+                return { id: existing.id, existed: true };
+            }
+
+            const inserted = await tx.routes.create({
+                data: {
+                    source: trimmedSource,
+                    destination: trimmedDestination,
+                    distance
+                }
+            });
+
+            return { id: inserted.id, existed: false };
+        });
+
+        if (result.id) {
             callback(null, {
-                route_id: result[0].id,
-                status: 201,
-                msg: 'Route added successfully'
+                route_id: result.id,
+                status: result.existed ? 200 : 201,
+                msg: result.existed ? 'Route already exists' : 'Route added successfully'
             });
         } else {
             callback(null, {

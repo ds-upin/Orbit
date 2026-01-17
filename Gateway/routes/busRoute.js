@@ -3,8 +3,8 @@ const { getBus, getBuses, addBus, updateBus, deleteBus } = require('../controlle
 
 const router = express.Router();
 
-router.get('/:limit/:skip', getBuses);
-router.get('/:id', getBus);
+router.get('/list', getBuses);
+router.get('/', getBus);
 router.post('/', addBus);
 router.put('/', updateBus);
 router.delete('/:id', deleteBus);

@@ -98,27 +98,52 @@ const addBus = async (call, callback) => {
     try {
         const { manufacturer, bus_number, bus_type, model_id } = call.request;
 
-        if (!manufacturer || !bus_number || !bus_type || !model_id || typeof manufacturer!=='string'|| typeof bus_number!=="string" || typeof bus_type!=="string" || typeof model_id!="number" ||manufacturer.trim().length===0 || bus_number.trim().length===0||bus_type.trim().length===0) {
+        // Validate input
+        if (
+            !manufacturer ||
+            !bus_number ||
+            !bus_type ||
+            !model_id ||
+            typeof manufacturer !== 'string' ||
+            typeof bus_number !== 'string' ||
+            typeof bus_type !== 'string' ||
+            typeof model_id !== 'number' ||
+            manufacturer.trim().length === 0 ||
+            bus_number.trim().length === 0 ||
+            bus_type.trim().length === 0
+        ) {
             return callback(null, {
                 status: 400,
-                msg: "manufacturer, bus_number, bus type and model required are required"
+                msg: "manufacturer, bus_number, bus_type and model_id are required"
             });
         }
 
-        const result = await prisma.$executeRaw`
-            INSERT INTO buses (manufacturer, bus_number, bus_type, model_id, created_at)
-            SELECT ${manufacturer.trim()}, ${bus_number.trim()}, ${bus_type.trim()}, ${model_id}, NOW()
-            WHERE NOT EXISTS (
-                SELECT 1 FROM buses
-                WHERE bus_number = ${bus_number.trim()}
-                  AND deleted_at IS NULL
-            )
-        `;
+        const trimmedManufacturer = manufacturer.trim();
+        const trimmedBusNumber = bus_number.trim();
+        const trimmedBusType = bus_type.trim();
 
-        if (result === 0) {
+        // Atomic transaction
+        const result = await prisma.$transaction(async (tx) => {
+            const inserted = await tx.$queryRaw`
+                INSERT INTO buses (manufacturer, bus_number, bus_type, model_id, created_at)
+                SELECT ${trimmedManufacturer}, ${trimmedBusNumber}, ${trimmedBusType}, ${model_id}, NOW()
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM buses
+                    WHERE bus_number = ${trimmedBusNumber} AND deleted_at IS NULL
+                )
+                AND EXISTS (
+                    SELECT 1 FROM models
+                    WHERE id = ${model_id}
+                )
+                RETURNING id
+            `;
+            return inserted;
+        });
+
+        if (result.length === 0) {
             return callback(null, {
                 status: 409,
-                msg: "Bus number already exists"
+                msg: "Either bus number already exists or model_id does not exist"
             });
         }
 

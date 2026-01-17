@@ -19,4 +19,4 @@ const client = new bus_service_proto.BusService(
     grpc.credentials.createInsecure()
 );
 
-module.export = client;
+module.exports = client;

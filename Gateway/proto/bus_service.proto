@@ -237,6 +237,7 @@ message Route {
     string destination = 3;
     int32 distance = 4;
 }
+
 message GetScheduledBusesRequest {
     int32 limit = 1;
     int32 skip = 2;

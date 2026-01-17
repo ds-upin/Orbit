@@ -3,7 +3,7 @@ const { getModel, getModels, addModel } = require('../controllers/busServiceCont
 
 router = express.Router();
 
-router.get('/:skip/:limit',getModels);
+router.get('/list/:skip/:limit',getModels);
 router.get('/:id',getModel);
 router.post('/',addModel);
 

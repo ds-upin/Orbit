@@ -42,6 +42,7 @@ const getModel = async (call, callback) => {
         callback(null, {
             status: 400,
             msg: 'Invalid model_id',
+            model_name:'',
             seats: []
         });
         return;

@@ -7,6 +7,7 @@ const busRouter = require('./routes/busRoute');
 const modelRouter = require('./routes/modelRoute');
 const routeRouter = require('./routes/routeRoute');
 const seatRouter = require('./routes/seatRouter');
+const bookingRouter = require('./routes/bookingRoute');
 const scheduleController = require('./routes/scheduleRoute');
 const { default: helmet } = require('helmet');
 
@@ -21,9 +22,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/users", userRouter);  // Done
 app.use("/model",modelRouter);  // Done
 app.use('/route',routeRouter);  // Done
-app.use('/seat',seatRouter);
-app.use("/bus", busRouter);
+app.use('/seat',seatRouter);    // Done
+app.use("/bus", busRouter);     // Done
 app.use('/schedule',scheduleController);
+app.use('/book',bookingRouter);
 
 app.listen(PORT, () => {
     console.log(`Gateway service is running on port ${PORT}`);

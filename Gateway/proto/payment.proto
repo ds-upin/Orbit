@@ -1,0 +1,42 @@
+syntax="proto3";
+
+package payment;
+
+message ReqPayment {
+    string webtoken = 1;
+    string name = 2;
+    string email = 3;
+    int64 user_id = 4;
+}
+
+message ResPayment {
+    int32 status = 1;
+    string checkoutUrl = 2;
+    string sessionId = 3;
+    string message = 4;
+}
+
+message Metadata {
+    int64 user_id = 1;
+    int64 schedule_id = 2;
+    string departure_time = 3;
+    string arrival_time = 4;
+    string name = 5;
+    string email = 6;
+}
+
+message ReqWebhook {
+    string session_id = 1;
+    int32 amount = 2;
+    Metadata metadata = 3;
+}
+
+message ResWebhook {
+    int32 status = 1;
+    string msg = 2;
+}
+
+service PaymentService {
+    rpc InitiatePayment(ReqPayment) returns (ResPayment);
+    rpc ConfirmPayment(ReqWebhook) returns (ResWebhook);
+}

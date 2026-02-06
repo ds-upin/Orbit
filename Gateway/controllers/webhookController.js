@@ -35,6 +35,7 @@ const handleWebhook = async (req, res) => {
                                 arrival_time: session.metadata.arrival_time.toString(),
                                 name: session.metadata.name.toString(),
                                 email: session.metadata.email.toString(),
+                                booking_group: Number(session.metadata.booking_group),
                             }
                         }, (err, response) => {
                             if (err) {

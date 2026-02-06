@@ -1,5 +1,5 @@
 const prisma = require('../prismaClient');
-
+const { produceSchedule } = require('../producer/schedule.produce');
 
 const addSchedule = async (call, callback) => {
     try {
@@ -43,9 +43,10 @@ const addSchedule = async (call, callback) => {
         const result = await prisma.$transaction(async (tx) => {
 
             const bus = await tx.buses.findUnique({
-                where: { id: bus_id,
+                where: {
+                    id: bus_id,
                     deleted_at: null
-                 }
+                }
             });
 
             if (!bus) throw new Error("BUS_NOT_FOUND");
@@ -69,7 +70,7 @@ const addSchedule = async (call, callback) => {
 
             return newSchedule;
         });
-
+        await handleProducer(result.id, 'created');
         return callback(null, {
             status: 200,
             msg: "Schedule added successfully",
@@ -132,15 +133,16 @@ const updateSchedule = async (call, callback) => {
         await prisma.$transaction(async (tx) => {
 
             const schedules = await tx.schedules.findUnique({
-                where: { id: schedule_id,
+                where: {
+                    id: schedule_id,
                     deleted_at: null,
-                 }
+                }
             });
 
             if (!schedules) throw new Error("SCHEDULE_NOT_FOUND");
 
             if (bus_id !== undefined) {
-                const bus = await tx.buses.findUnique({ where: { id: bus_id, deleted_at:null } });
+                const bus = await tx.buses.findUnique({ where: { id: bus_id, deleted_at: null } });
                 if (!bus) throw new Error("BUS_NOT_FOUND");
             }
 
@@ -166,13 +168,15 @@ const updateSchedule = async (call, callback) => {
             }
 
             await tx.schedules.update({
-                where: { id: schedule_id,
+                where: {
+                    id: schedule_id,
                     deleted_at: null,
-                 },
+                },
                 data: updatedSchedule
             });
         });
 
+        await handleProducer(schedule_id, 'updated');
         return callback(null, { status: 200, msg: "Schedule updated successfully" });
 
     } catch (error) {
@@ -221,7 +225,7 @@ const deleteSchedule = async (call, callback) => {
 
             return true;
         });
-
+        await handleProducer(schedule_id, 'deleted');
         return callback(null, { status: 200, msg: "Schedule deleted successfully" });
 
     } catch (error) {
@@ -291,8 +295,8 @@ const getSchedules = async (call, callback) => {
     try {
         const { limit, skip } = call.request;
 
-        const safeLimit = parseInt(limit) || 10; 
-        const safeSkip = parseInt(skip) || 0;     
+        const safeLimit = parseInt(limit) || 10;
+        const safeSkip = parseInt(skip) || 0;
 
         if (safeLimit <= 0) {
             return callback(null, { status: 400, msg: "limit must be a positive number", schedules: [] });
@@ -306,7 +310,7 @@ const getSchedules = async (call, callback) => {
             where: { deleted_at: null },
             skip: safeSkip,
             take: safeLimit,
-            orderBy: { scheduled_date: 'asc' } 
+            orderBy: { scheduled_date: 'asc' }
         });
 
         const formattedSchedules = schedules.map(s => ({
@@ -511,4 +515,43 @@ const getScheduledBusesByRoute = async (call, callback) => {
     }
 };
 
-module.exports = { getScheduledBusesByRoute,  addSchedule, updateSchedule, deleteSchedule, getSchedule, getSchedules, getScheduledBuses };
+const handleProducer = async (schedule_id, status) => {
+    if (status === "deleted") {
+        await produceSchedule({ data: { status, schedule_id } });
+        return;
+    }
+    const schedule = await prisma.schedules.findUnique({
+        where: {
+            id: schedule_id
+        },
+        include: {
+            buses: {
+                include: {
+                    models: {
+                        include: {
+                            seats: {
+                                select: { id: true }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    if (!schedule) {
+        throw new Error("SCHEDULE_NOT_FOUND");
+    }
+
+    const seat_ids = schedule.buses?.models?.seats.map(seat => seat.id) || [];
+    const data = {
+        status: status,
+        schedule_details: schedule,
+        seat_ids
+    };
+    await produceSchedule({ data });
+    return;
+};
+
+
+module.exports = { getScheduledBusesByRoute, addSchedule, updateSchedule, deleteSchedule, getSchedule, getSchedules, getScheduledBuses };

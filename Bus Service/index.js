@@ -10,9 +10,12 @@ const route_controller = require('./handlers/routes');
 const seat_controller = require('./handlers/seats');
 const schedule_controller = require('./handlers/schedules');
 
-const proto_path = path.join(__dirname,'bus_service.proto');
+// const { verificationDataConsumer } = require('./consumer/verificationData ');
+// verificationDataConsumer().catch(console.error);
 
-const packageDefinition = protoLoader.loadSync(proto_path,{
+const proto_path = path.join(__dirname, 'bus_service.proto');
+
+const packageDefinition = protoLoader.loadSync(proto_path, {
     keepCase: true,
     longs: String,
     enums: String,
@@ -24,7 +27,7 @@ const bus_service_proto = grpc.loadPackageDefinition(packageDefinition).bus_serv
 
 function main() {
     const server = new grpc.Server();
-    server.addService(bus_service_proto.BusService.service,{
+    server.addService(bus_service_proto.BusService.service, {
         GetBus: bus_controller.getBus,
         GetBuses: bus_controller.getBuses,
         AddBus: bus_controller.addBus,

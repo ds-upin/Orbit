@@ -13,10 +13,10 @@ model bookings {
   user_id       Int
   schedule_id   Int
   status        String          @default("LOCKED") @db.VarChar(100)
-  verification  String          @default("PENDING") @db.VarChar(100)
   payment_id    Int?
   expires_at    DateTime        @default(dbgenerated("(now() + '00:04:00'::interval)")) @db.Timestamptz(6)
   created_at    DateTime        @default(now()) @db.Timestamptz(6)
+  amount        Int?
   seat_bookings seat_bookings[]
 }
 
@@ -28,4 +28,24 @@ model seat_bookings {
   bookings      bookings @relation(fields: [booking_group], references: [booking_group], onDelete: Cascade, onUpdate: NoAction, map: "fk_booking_group")
 
   @@unique([schedule_id, seat_id], map: "unique_seat_per_schedule")
+}
+
+model faulty_payment {
+  id            Int  @id @default(autoincrement())
+  schedule_id   Int?
+  user_id       Int?
+  payment_id    Int?
+  booking_group Int?
+}
+
+model schedules {
+  id             Int       @unique
+  scheduled_date DateTime  @db.Date
+  departure_time DateTime? @db.Timestamptz(6)
+  arrival_time   DateTime? @db.Timestamptz(6)
+  status         String?   @db.VarChar(50)
+  created_at     DateTime? @db.Timestamptz(6)
+  deleted_at     DateTime? @db.Timestamptz(6)
+  seat_ids       Int[]
+  fare           Int
 }

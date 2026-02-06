@@ -34,6 +34,7 @@ const userLogin = async (call, callback) => {
             id: user.id,
             email: user.email,
             role: 'user',
+            name: user.name,
         };
 
         const secretKey = process.env.JWT_SECRET || 'your_secret_key';

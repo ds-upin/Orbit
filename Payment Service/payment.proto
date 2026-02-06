@@ -23,7 +23,6 @@ message Metadata {
     string arrival_time = 4;
     string name = 5;
     string email = 6;
-    int64 booking_group = 7;
 }
 
 message ReqWebhook {

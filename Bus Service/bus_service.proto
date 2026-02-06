@@ -285,4 +285,4 @@ service BusService {
     rpc GetSchedules(ReqGetSchedules) returns (ResGetSchedules);
     rpc GetScheduledBuses(GetScheduledBusesRequest) returns (GetScheduledBusesResponse);
     rpc GetScheduledBusesByRoute(GetScheduledBusesByRouteRequest) returns (GetScheduledBusesResponse);
-}
+} 

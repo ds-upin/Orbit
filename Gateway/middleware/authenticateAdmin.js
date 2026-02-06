@@ -20,7 +20,7 @@ const authenticateAdmin = (req, res, next) => {
             process.env.JWT_SECRET || 'your_secret_key'
         );
 
-        const { id, email, role } = decoded;
+        const { id, email, role, name } = decoded;
 
         if (!id || !email || !role) {
             return res.status(401).json({ message: 'Unauthorized' });
@@ -34,6 +34,7 @@ const authenticateAdmin = (req, res, next) => {
             id,
             email,
             role,
+            name,
         };
 
         next();
@@ -42,4 +43,4 @@ const authenticateAdmin = (req, res, next) => {
     }
 };
 
-module.exports = authenticateAdmin;
+module.exports = { authenticateAdmin };

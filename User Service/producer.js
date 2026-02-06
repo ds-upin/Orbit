@@ -5,8 +5,6 @@ const kafka = new Kafka({
     brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
 });
 
-
-
 const produceEmailCode = async (email, code, name) => {
     //console.log("Producing email code for:", email, code, name);
     const producer = kafka.producer()

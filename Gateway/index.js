@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 
 const userRouter = require('./routes/userRoutes');
 const busRouter = require('./routes/busRoute');
@@ -16,6 +17,13 @@ const { default: helmet } = require('helmet');
 const app = express();
 const PORT = process.env.PORT || 3022;
 
+const limiter = rateLimit({
+    windowMs: 60 * 1000, 
+    max: 100,     
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
 app.use(cors());
 app.use(helmet());
 
@@ -24,6 +32,7 @@ app.use("/webhook", webhookRouter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(limiter);  
 app.use("/users", userRouter);  // Done
 app.use("/model", modelRouter);  // Done
 app.use('/route', routeRouter);  // Done

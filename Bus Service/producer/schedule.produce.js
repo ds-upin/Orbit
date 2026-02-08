@@ -16,7 +16,6 @@ const produceSchedule = async ({ data }) => {
                 { value: JSON.stringify({ "data": data }) },
             ],
         });
-
         await producer.disconnect();
         return true;
     } catch (err) {

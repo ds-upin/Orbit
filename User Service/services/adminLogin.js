@@ -10,7 +10,7 @@ const adminLogin = async (call, callback) => {
         const result = await prisma.$queryRaw`
             SELECT u.id, u.email, u.name, u.password, r.role_type 
             FROM users u
-            JOIN roles r ON u.role = r.id
+            JOIN role r ON u.role = r.id
             WHERE u.email = ${email} AND r.role_type = 'admin' AND u.verified = TRUE
         `;
 
@@ -36,7 +36,7 @@ const adminLogin = async (call, callback) => {
         }
 
         const payload = {
-            userId: admin.id,
+            id: admin.id,
             email: admin.email,
             name: admin.name,
             role: 'admin',

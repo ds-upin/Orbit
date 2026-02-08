@@ -2,7 +2,7 @@ const prisma = require('../prismaClient');
 
 const updateSchedule = async (data) => {
     const { status, schedule_details } = data;
-
+    console.log(data);
     if (status === "created") {
         const {
             id,
@@ -16,14 +16,14 @@ const updateSchedule = async (data) => {
             id,
             fare,
             departure_time,
-            arrival_time,
+            arrival_time
         )
         VALUES (
         ${id},
         ${fare},
         ${departure_time},
-        ${arrival_time},
-        );
+        ${arrival_time}
+        )
         `;
 
         return { success: true };
@@ -49,7 +49,7 @@ const updateSchedule = async (data) => {
       SET
         departure_time = ${departure_time},
         arrival_time = ${arrival_time},
-        fare = ${fare},
+        fare = ${fare}
       WHERE id = ${schedule_details.id};
     `;
 

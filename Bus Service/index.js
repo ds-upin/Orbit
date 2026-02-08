@@ -9,10 +9,7 @@ const model_controller = require('./handlers/model');
 const route_controller = require('./handlers/routes');
 const seat_controller = require('./handlers/seats');
 const schedule_controller = require('./handlers/schedules');
-
-// const { verificationDataConsumer } = require('./consumer/verificationData ');
-// verificationDataConsumer().catch(console.error);
-
+ 
 const proto_path = path.join(__dirname, 'bus_service.proto');
 
 const packageDefinition = protoLoader.loadSync(proto_path, {

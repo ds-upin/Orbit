@@ -27,7 +27,7 @@ const booking_proto = grpc.loadPackageDefinition(packageDefinition).booking;
 function main() {
     const server = new grpc.Server();
     server.addService(booking_proto.BookingService.service, {
-        AddBooking: addBooking
+        AddBooking: addBooking,
     });
  
     const PORT = process.env.GRPC_SERVER_ADDR || "0.0.0.0:50053";
@@ -36,6 +36,7 @@ function main() {
         PORT,
         grpc.ServerCredentials.createInsecure(),
         () => {
+            server.start();
             console.log(`gRPC UserService running at ${PORT}`); 
         }
     )

@@ -1,4 +1,6 @@
 const prisma = require('../prismaClient');
+const { Prisma } = require('@prisma/client');
+
 const { produceSchedule } = require('../producer/schedule.produce');
 
 const addSchedule = async (call, callback) => {
@@ -74,10 +76,20 @@ const addSchedule = async (call, callback) => {
         return callback(null, {
             status: 200,
             msg: "Schedule added successfully",
-            scheduled_id: result.id
+            schedule_id: result.id,
         });
 
     } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code === 'P2002') {
+                return callback(null, {
+                    status: 409,
+                    msg: "Schedule already exists for this bus, route, and time",
+                    schedule_id: 0
+                });
+            }
+        }
+
         if (error.message === "BUS_NOT_FOUND") {
             return callback(null, { status: 404, msg: "Bus not found", scheduled_id: 0 });
         }
@@ -204,27 +216,28 @@ const updateSchedule = async (call, callback) => {
 
 const deleteSchedule = async (call, callback) => {
     try {
-        const { scheduled_id } = call.request;
+        const { schedule_id } = call.request;
 
-        if (!scheduled_id || isNaN(scheduled_id)) {
-            return callback(null, { status: 400, msg: "Valid scheduled_id is required" });
+        if (!schedule_id || isNaN(schedule_id)) {
+            return callback(null, { status: 400, msg: "Valid schedule_id is required" });
         }
 
-        const result = await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx) => {
 
-            const schedule = await tx.schedules.findFirst({
-                where: { id: scheduled_id, deleted_at: null }
+            const scheduled = await tx.schedules.findFirst({
+                where: { id: schedule_id, deleted_at: null }
             });
 
-            if (!schedule) throw new Error("SCHEDULE_NOT_FOUND");
+            if (!scheduled) throw new Error("SCHEDULE_NOT_FOUND");
 
             await tx.schedules.update({
-                where: { id: scheduled_id },
+                where: { id: schedule_id },
                 data: { deleted_at: new Date() }
             });
 
             return true;
         });
+
         await handleProducer(schedule_id, 'deleted');
         return callback(null, { status: 200, msg: "Schedule deleted successfully" });
 
@@ -517,7 +530,7 @@ const getScheduledBusesByRoute = async (call, callback) => {
 
 const handleProducer = async (schedule_id, status) => {
     if (status === "deleted") {
-        await produceSchedule({ data: { status, schedule_id } });
+        await produceSchedule({ data: { status, schedule_details:{id:schedule_id} } });
         return;
     }
     const schedule = await prisma.schedules.findUnique({

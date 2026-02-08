@@ -21,12 +21,13 @@ const authenticateAdmin = (req, res, next) => {
         );
 
         const { id, email, role, name } = decoded;
+        //console.log(decoded);
 
         if (!id || !email || !role) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({ message: 'Unauthorized 1' });
         }
         if (role !== 'admin') {
-            return res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({ message: 'Unauthorized 2' });
         }
 
         req.token = token;
@@ -39,7 +40,7 @@ const authenticateAdmin = (req, res, next) => {
 
         next();
     } catch (error) {
-        return res.status(401).json({ message: 'Unauthorized' });
+        return res.status(401).json({ message: 'Unauthorized Error' });
     }
 };
 

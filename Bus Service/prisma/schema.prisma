@@ -44,13 +44,15 @@ model schedules {
   departure_time DateTime? @db.Timestamptz(6)
   arrival_time   DateTime? @db.Timestamptz(6)
   fare           Int?
-  status         String?   @db.VarChar(50)
+  status         String?   @default("ACTIVE") @db.VarChar(50)
   created_at     DateTime? @default(now()) @db.Timestamptz(6)
   bus_id         Int?
   route_id       Int?
   deleted_at     DateTime? @db.Timestamptz(6)
   buses          buses?    @relation(fields: [bus_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
   routes         routes?   @relation(fields: [route_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([scheduled_date, departure_time, arrival_time, bus_id], map: "unique_schedule")
 }
 
 model seats {

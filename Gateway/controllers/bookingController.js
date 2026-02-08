@@ -1,7 +1,9 @@
 const client = require('../grpc_clients/booking_client');
 
 const initiateBooking = (req, res) => {
-    const { user_id, schedule_id, seat_ids } = req.body;
+    const { schedule_id, seat_ids } = req.body;
+    const { id } = req.user;
+    const user_id=id;
     
     if (user_id === undefined || schedule_id === undefined || seat_ids === undefined) {
         return res.status(400).json({

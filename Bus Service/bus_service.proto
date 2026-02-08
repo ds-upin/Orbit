@@ -178,6 +178,7 @@ message ReqUpdateSchedule {
     int32 bus_id = 5;
     int32 route_id = 6;
     string status = 7;
+    int32 schedule_id = 8;
 }
 
 message ResUpdateSchedule {

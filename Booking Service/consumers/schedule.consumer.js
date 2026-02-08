@@ -19,6 +19,7 @@ const runScheduleConsumer = async () => {
     await consumer.run({
         eachMessage: async ({ message }) => {
             const parsedMessage = JSON.parse(message.value.toString());
+            console.log(parsedMessage.data);
             await updateSchedule(parsedMessage.data);
         },
     });

@@ -99,6 +99,7 @@ const updateSchedule = async (req, res) => {
             bus_id,
             route_id,
             status,
+            schedule_id,
         } = req.body;
 
         if (
@@ -135,6 +136,7 @@ const updateSchedule = async (req, res) => {
             bus_id: parseInt(bus_id, 10),
             route_id: parseInt(route_id, 10),
             status,
+            schedule_id,
         };
 
         client.UpdateSchedule(request, (err, response) => {
@@ -293,11 +295,67 @@ const getScheduledBusesByRoute = async (req, res) => {
     }
 };
 
-module.exports = { 
-    getSchedule, 
-    getSchedules, 
-    getScheduledBuses, 
-    getScheduledBusesByRoute, 
-    updateSchedule, 
-    deleteSchedule
+const addSchedule = async (req, res) => {
+    try {
+        const {
+            scheduled_date,
+            departure_time,
+            arrival_time,
+            fare,
+            bus_id,
+            route_id
+        } = req.body;
+
+        if (
+            !scheduled_date ||
+            !departure_time ||
+            !arrival_time ||
+            bus_id === undefined ||
+            route_id === undefined
+        ) {
+            return res.status(400).json({
+                status: 400,
+                msg: "Missing required fields"
+            });
+        }
+
+        const grpcPayload = {
+            scheduled_date,  
+            departure_time,  
+            arrival_time,     
+            fare,             
+            bus_id: Number(bus_id),
+            route_id: Number(route_id)
+        };
+
+        client.AddSchedule(grpcPayload, (err, response) => {
+            if (err) {
+                console.error("gRPC error:", err);
+                return res.status(500).json({
+                    status: 500,
+                    msg: "Service unavailable"
+                });
+            }
+            console.log(response)
+            return res.status(response.status).json(response);
+        });
+
+    } catch (error) {
+        console.error("addScheduleController error:", error);
+        return res.status(500).json({
+            status: 500,
+            msg: "Internal server error"
+        });
+    }
+};
+
+
+module.exports = {
+    getSchedule,
+    getSchedules,
+    getScheduledBuses,
+    getScheduledBusesByRoute,
+    updateSchedule,
+    deleteSchedule,
+    addSchedule,
 };

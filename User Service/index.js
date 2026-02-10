@@ -3,6 +3,7 @@ require('dotenv').config();
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
+const fs = require('fs');
 
 const userLogin = require('./services/userLogin');
 const userRegister = require('./services/userRegister');
@@ -20,6 +21,20 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
     oneofs: true,
 });
 
+const serverKey = fs.readFileSync("certs/user-service.key");
+const serverCert = fs.readFileSync("certs/user-service.crt");
+const caCert = fs.readFileSync("certs/ca.crt");
+const creds = grpc.ServerCredentials.createSsl(
+    caCert,
+    [
+        {
+            private_key: serverKey,
+            cert_chain: serverCert,
+        },
+    ],
+    true
+);
+
 const userProto = grpc.loadPackageDefinition(packageDefinition).user;
 
 
@@ -35,11 +50,11 @@ function main() {
         verifyUser,
     });
 
-    const PORT = '0.0.0.0:50051';
+    const PORT = process.env.PORT ||'0.0.0.0:50051';
 
     server.bindAsync(
         PORT,
-        grpc.ServerCredentials.createInsecure(),
+        creds,
         () => {
             console.log(`🚀 gRPC UserService running at ${PORT}`);
         }

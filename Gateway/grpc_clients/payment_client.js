@@ -1,6 +1,7 @@
 const grpc = require('@grpc/grpc-js');
 const protoLoader = require('@grpc/proto-loader');
 const path = require('path');
+const fs = require('fs');
 
 const PROTO_PATH = path.join(__dirname, "../proto", "payment.proto");
 
@@ -12,11 +13,20 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
     oneofs: true,
 });
 
+const caCert = fs.readFileSync(path.join(__dirname, "../certs/ca.crt"));
+const gatewayKey = fs.readFileSync(path.join(__dirname, "../certs/gateway.key"));
+const gatewayCert = fs.readFileSync(path.join(__dirname, "../certs/gateway.crt"));
+const creds = grpc.credentials.createSsl(
+    caCert,
+    gatewayKey,
+    gatewayCert
+);
+
 const paymentProto = grpc.loadPackageDefinition(packageDefinition).payment;
 
 const client = new paymentProto.PaymentService(
-    process.env.PAYMENT_SERVICE_URL || 'localhost:50054',
-    grpc.credentials.createInsecure()
+    process.env.PAYMENT_SERVICE_URL || '0.0.0.0:50054',
+    creds
 )
 
 module.exports = client;

@@ -12,6 +12,7 @@ message ResAddBooking {
     int32 booking_id = 1;
     int32 status = 2;
     string msg = 3; 
+    string webtoken = 4;
 }
 
 service BookingService {

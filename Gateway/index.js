@@ -31,6 +31,7 @@ app.use("/webhook", webhookRouter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10kb" }));
 
 app.use(limiter);  
 app.use("/users", userRouter);  // Done

@@ -49,7 +49,8 @@ const initiateBooking = (req, res) => {
 
             return res.status(response.status).json({
                 booking_id: response.booking_id,
-                message: response.msg
+                message: response.msg,
+                payment_token: response.webtoken
             });
         }
     );

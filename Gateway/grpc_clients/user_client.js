@@ -25,7 +25,7 @@ const creds = grpc.credentials.createSsl(
 const userProto = grpc.loadPackageDefinition(packageDefinition).user;
 
 const client = new userProto.UserService(
-    process.env.USER_SERVICE_URL || 'localhost:50051',
+    process.env.USER_SERVICE_URL || '127.0.0.1:50051',
     creds
 );
 

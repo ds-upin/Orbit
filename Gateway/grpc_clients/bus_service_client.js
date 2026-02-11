@@ -25,7 +25,7 @@ const creds = grpc.credentials.createSsl(
 const bus_service_proto = grpc.loadPackageDefinition(packageDefinition).bus_service;
 
 const client = new bus_service_proto.BusService(
-    process.env.BUS_SERVICE_URL || '0.0.0.0:50052',
+    process.env.BUS_SERVICE_URL || '127.0.0.1:50052',
     creds
 );
 

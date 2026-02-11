@@ -25,7 +25,7 @@ const creds = grpc.credentials.createSsl(
 const booking_proto = grpc.loadPackageDefinition(packageDefinition).booking;
 
 const client = new booking_proto.BookingService(
-    process.env.BOOKING_SERVICE_URL || '0.0.0.0:50053',
+    process.env.BOOKING_SERVICE_URL || '127.0.0.1:50053',
     creds,
 );
 

@@ -25,7 +25,7 @@ const creds = grpc.credentials.createSsl(
 const paymentProto = grpc.loadPackageDefinition(packageDefinition).payment;
 
 const client = new paymentProto.PaymentService(
-    process.env.PAYMENT_SERVICE_URL || '0.0.0.0:50054',
+    process.env.PAYMENT_SERVICE_URL || '127.0.0.1:50054',
     creds
 )
 

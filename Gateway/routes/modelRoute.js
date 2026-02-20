@@ -1,11 +1,11 @@
-const express = require('express');
-const { getModel, getModels, addModel } = require('../controllers/busServiceControllers/modelController');
-const { authenticateAdmin } = require('../middleware/authenticateAdmin');
+import express from 'express';
+import { getModel, getModels, addModel } from '../controllers/busServiceControllers/modelController.js';
+import { authenticateAdmin } from '../middleware/authenticateAdmin.js';
 
-router = express.Router();
+const router = express.Router();
 
 router.get('/list/:skip/:limit', authenticateAdmin, getModels);
 router.get('/:id', authenticateAdmin, getModel);
 router.post('/', authenticateAdmin, addModel);
 
-module.exports = router;
+export default router;

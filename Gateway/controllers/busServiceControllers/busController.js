@@ -1,4 +1,4 @@
-const client = require('../../grpc_clients/bus_service_client');
+import client from '../../grpc_clients/bus_service_client.js';
 
 const getBus = async (req, res) => {
     let { bus_number } = req.query;
@@ -220,4 +220,4 @@ const deleteBus = async (req, res) => {
     }
 };
 
-module.exports = {getBus, getBuses, addBus, updateBus, deleteBus };
+export { getBus, getBuses, addBus, updateBus, deleteBus };

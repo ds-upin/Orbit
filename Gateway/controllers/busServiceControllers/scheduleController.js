@@ -1,4 +1,4 @@
-const client = require('../../grpc_clients/bus_service_client');
+import client from '../../grpc_clients/bus_service_client.js';
 
 const getSchedule = async (req, res) => {
     try {
@@ -350,7 +350,7 @@ const addSchedule = async (req, res) => {
 };
 
 
-module.exports = {
+export {
     getSchedule,
     getSchedules,
     getScheduledBuses,

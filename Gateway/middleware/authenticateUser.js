@@ -1,5 +1,5 @@
-const { status } = require('@grpc/grpc-js');
-const jwt = require('jsonwebtoken');
+import { status } from '@grpc/grpc-js';
+import jwt from 'jsonwebtoken';
 
 const authenticateUser = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -43,4 +43,4 @@ const authenticateUser = (req, res, next) => {
     }
 };
 
-module.exports = { authenticateUser };
+export { authenticateUser };

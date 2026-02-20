@@ -1,7 +1,11 @@
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
-const path = require('path');
-const fs = require('fs');
+import grpc from '@grpc/grpc-js';
+import protoLoader from '@grpc/proto-loader';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const proto_path = path.join(__dirname, "../proto", "booking.proto");
 
@@ -29,4 +33,4 @@ const client = new booking_proto.BookingService(
     creds,
 );
 
-module.exports = client;
+export default client;

@@ -1,9 +1,9 @@
-const express = require('express');
-const { createPaymentIntent } = require('../controllers/paymentController');
-const { authenticateUser } = require('../middleware/authenticateUser')
+import express from 'express';
+import { createPaymentIntent } from '../controllers/paymentController.js';
+import { authenticateUser } from '../middleware/authenticateUser.js';
 
 const router = express.Router();
 
-router.post('/create-intent',authenticateUser, createPaymentIntent);
+router.post('/create-intent', authenticateUser, createPaymentIntent);
 
-module.exports = router;
+export default router;

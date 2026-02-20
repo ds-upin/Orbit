@@ -1,25 +1,27 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const rateLimit = require('express-rate-limit');
+import dotenv from 'dotenv';
+import express from 'express';
+import cors from 'cors';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 
-const userRouter = require('./routes/userRoutes');
-const busRouter = require('./routes/busRoute');
-const modelRouter = require('./routes/modelRoute');
-const routeRouter = require('./routes/routeRoute');
-const seatRouter = require('./routes/seatRouter');
-const webhookRouter = require('./routes/webhookRoute');
-const bookingRouter = require('./routes/bookingRoute');
-const paymentRouter = require('./routes/paymentRouter');
-const scheduleController = require('./routes/scheduleRoute');
-const { default: helmet } = require('helmet');
+import userRouter from './routes/userRoutes.js';
+import busRouter from './routes/busRoute.js';
+import modelRouter from './routes/modelRoute.js';
+import routeRouter from './routes/routeRoute.js';
+import seatRouter from './routes/seatRouter.js';
+import webhookRouter from './routes/webhookRoute.js';
+import bookingRouter from './routes/bookingRoute.js';
+import paymentRouter from './routes/paymentRouter.js';
+import scheduleController from './routes/scheduleRoute.js';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3022;
 
 const limiter = rateLimit({
-    windowMs: 60 * 1000, 
-    max: 100,     
+    windowMs: 60 * 1000,
+    max: 100,
     standardHeaders: true,
     legacyHeaders: false,
 });
@@ -33,16 +35,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "10kb" }));
 
-app.use(limiter);  
-app.use("/users", userRouter);  // Done
-app.use("/model", modelRouter);  // Done
-app.use('/route', routeRouter);  // Done
-app.use('/seat', seatRouter);    // Done
-app.use("/bus", busRouter);     // Done
+app.set('trust proxy', 1);
+app.use(limiter);
+
+app.use("/users", userRouter);
+app.use("/model", modelRouter);
+app.use('/route', routeRouter);
+app.use('/seat', seatRouter);
+app.use("/bus", busRouter);
 app.use('/payment', paymentRouter);
 app.use('/schedule', scheduleController);
 app.use('/book', bookingRouter);
 
 app.listen(PORT, () => {
     console.log(`Gateway service is running on port ${PORT}`);
-});   
+});

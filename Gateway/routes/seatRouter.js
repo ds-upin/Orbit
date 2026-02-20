@@ -1,9 +1,10 @@
-const express = require('express');
-const { authenticateAdmin } = require('../middleware/authenticateAdmin')
-const { addSeat, deleteSeat } = require('../controllers/busServiceControllers/seatController')
-router = express.Router();
+import express from 'express';
+import { authenticateAdmin } from '../middleware/authenticateAdmin.js';
+import { addSeat, deleteSeat } from '../controllers/busServiceControllers/seatController.js';
+
+const router = express.Router();
 
 router.post('/', authenticateAdmin, addSeat);
 router.delete('/', authenticateAdmin, deleteSeat);
 
-module.exports = router;
+export default router;

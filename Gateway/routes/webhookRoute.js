@@ -1,9 +1,9 @@
-const express = require('express');
-const { authenticateUser } = require('../middleware/authenticateUser');
-const { handleWebhook } = require('../controllers/webhookController');
+import express from 'express';
+import { authenticateUser } from '../middleware/authenticateUser.js';
+import { handleWebhook } from '../controllers/webhookController.js';
 
 const router = express.Router();
 
 router.post('/', authenticateUser, handleWebhook);
 
-module.exports = router;
+export default router;

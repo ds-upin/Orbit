@@ -1,4 +1,4 @@
-const client = require('../grpc_clients/booking_client');
+import client from '../grpc_clients/booking_client.js';
 
 const initiateBooking = (req, res) => {
     const { schedule_id, seat_ids } = req.body;
@@ -56,4 +56,4 @@ const initiateBooking = (req, res) => {
     );
 };
 
-module.exports = { initiateBooking };
+export { initiateBooking };

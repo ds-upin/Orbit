@@ -1,7 +1,6 @@
-const express = require('express');
-const { authenticateAdmin } = require('../middleware/authenticateAdmin');
-
-const {
+import express from 'express';
+import { authenticateAdmin } from '../middleware/authenticateAdmin.js';
+import {
     getSchedule,
     getSchedules,
     getScheduledBuses,
@@ -9,12 +8,11 @@ const {
     updateSchedule,
     deleteSchedule,
     addSchedule,
-} = require('../controllers/busServiceControllers/scheduleController');
+} from '../controllers/busServiceControllers/scheduleController.js';
 
 const router = express.Router();
 
 // Pending work:- Add Schedule
-
 router.get('/list', getSchedules);
 router.post('/add', authenticateAdmin, addSchedule);
 router.get('/buses', getScheduledBuses);
@@ -24,4 +22,4 @@ router.get('/:id', getSchedule);
 router.put('/', authenticateAdmin, updateSchedule);
 router.delete('/:id', authenticateAdmin, deleteSchedule);
 
-module.exports = router;
+export default router;

@@ -1,4 +1,4 @@
-const client = require('../../grpc_clients/bus_service_client');
+import client from '../../grpc_clients/bus_service_client.js';
 
 const isValidString = (value) => {
     return typeof value === 'string' && value.trim().length > 0;
@@ -70,4 +70,4 @@ const addRoute = async (req, res) => {
 };
 
 
-module.exports = { getRoute, addRoute };
+export { getRoute, addRoute };

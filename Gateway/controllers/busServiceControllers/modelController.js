@@ -1,4 +1,4 @@
-const client = require('../../grpc_clients/bus_service_client');
+import client from '../../grpc_clients/bus_service_client.js';
 
 const getModels = (req, res) => {
     let { skip, limit } = req.params;
@@ -141,4 +141,4 @@ const addModel = (req, res) => {
     );
 };
 
-module.exports = { getModel, getModels, addModel };
+export { getModel, getModels, addModel };

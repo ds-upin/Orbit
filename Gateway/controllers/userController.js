@@ -1,4 +1,4 @@
-const client = require('../grpc_clients/user_client');
+import client from '../grpc_clients/user_client.js';
 
 const loginUser = (req, res) => {
     const { email, password } = req.body;
@@ -63,4 +63,4 @@ const loginAdmin = (req, res) => {
     });
 };
 
-module.exports = { loginUser, registerUser, getUserProfile, verifyUser, loginAdmin };
+export { loginUser, registerUser, getUserProfile, verifyUser, loginAdmin };

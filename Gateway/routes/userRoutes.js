@@ -1,6 +1,13 @@
-const { loginUser, registerUser, getUserProfile, verifyUser, loginAdmin } = require('../controllers/userController');
-const { authenticateUser } = require('../middleware/authenticateUser');
-const express = require('express');
+import express from 'express';
+import {
+    loginUser,
+    registerUser,
+    getUserProfile,
+    verifyUser,
+    loginAdmin
+} from '../controllers/userController.js';
+import { authenticateUser } from '../middleware/authenticateUser.js';
+
 const router = express.Router();
 
 router.post('/login', loginUser);
@@ -9,4 +16,4 @@ router.post('/register', registerUser);
 router.post('/verify', verifyUser);
 router.get('/profile', authenticateUser, getUserProfile);
 
-module.exports = router;
+export default router;

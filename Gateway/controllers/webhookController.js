@@ -1,6 +1,6 @@
-const client = require('../grpc_clients/payment_client');
+import client from '../grpc_clients/payment_client.js';
 
-const stripe = require('../stripeClient');
+import stripe from '../stripeClient.js';
 
 const handleWebhook = async (req, res) => {
     let event;
@@ -72,4 +72,4 @@ const handleWebhook = async (req, res) => {
     }
 };
 
-module.exports = { handleWebhook };
+export { handleWebhook };

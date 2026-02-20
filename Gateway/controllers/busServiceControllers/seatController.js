@@ -1,4 +1,4 @@
-const client = require('../../grpc_clients/bus_service_client');
+import client from '../../grpc_clients/bus_service_client.js';
 
 const addSeat = async (req, res) => {
     let { seat_number, model_id } = req.body;
@@ -120,4 +120,4 @@ const deleteSeat = async (req, res) => {
     );
 };
 
-module.exports = { addSeat, deleteSeat };
+export { addSeat, deleteSeat };

@@ -1,7 +1,11 @@
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
-const path = require('path');
-const fs = require('fs');
+import grpc from '@grpc/grpc-js';
+import protoLoader from '@grpc/proto-loader';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PROTO_PATH = path.join(__dirname, '../proto/user.proto');
 
@@ -18,7 +22,7 @@ const gatewayKey = fs.readFileSync(path.join(__dirname, "../certs/gateway.key"))
 const gatewayCert = fs.readFileSync(path.join(__dirname, "../certs/gateway.crt"));
 const creds = grpc.credentials.createSsl(
     caCert,
-    gatewayKey,
+    gatewayKey, 
     gatewayCert
 );
 
@@ -29,4 +33,4 @@ const client = new userProto.UserService(
     creds
 );
 
-module.exports = client;
+export default client;

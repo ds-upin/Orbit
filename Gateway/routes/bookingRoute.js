@@ -1,9 +1,9 @@
-const express = require('express');
-const { initiateBooking } = require('../controllers/bookingController');
-const { authenticateUser } = require('../middleware/authenticateUser');
+import express from 'express';
+import { initiateBooking } from '../controllers/bookingController.js';
+import { authenticateUser } from '../middleware/authenticateUser.js';
 
 const router = express.Router();
 
 router.post('/', authenticateUser, initiateBooking);
 
-module.exports = router;
+export default router;

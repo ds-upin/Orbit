@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 const authenticateAdmin = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -21,8 +21,7 @@ const authenticateAdmin = (req, res, next) => {
         );
 
         const { id, email, role, name } = decoded;
-        //console.log(decoded);
-
+        
         if (!id || !email || !role) {
             return res.status(401).json({ message: 'Unauthorized 1' });
         }
@@ -44,4 +43,4 @@ const authenticateAdmin = (req, res, next) => {
     }
 };
 
-module.exports = { authenticateAdmin };
+export { authenticateAdmin };

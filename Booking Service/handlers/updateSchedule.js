@@ -1,4 +1,4 @@
-const prisma = require('../prismaClient');
+import prisma from '../prismaClient.js';
 
 const updateSchedule = async (data) => {
     const { status, schedule_details, seat_ids } = data;
@@ -75,4 +75,4 @@ const updateSchedule = async (data) => {
     }
 };
 
-module.exports = { updateSchedule };
+export { updateSchedule };

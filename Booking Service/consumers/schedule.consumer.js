@@ -1,5 +1,5 @@
-const { Kafka } = require('kafkajs');
-const { updateSchedule } = require('../handlers/updateSchedule');
+import { Kafka } from 'kafkajs';
+import { updateSchedule } from '../handlers/updateSchedule.js'; 
 
 const kafka = new Kafka({
     clientId: 'booking-schedule-consumer',
@@ -8,7 +8,7 @@ const kafka = new Kafka({
 
 const consumer = kafka.consumer({ groupId: 'booking-schedule-group' });
 
-const runScheduleConsumer = async () => {
+export const runScheduleConsumer = async () => {
     await consumer.connect();
 
     await consumer.subscribe({
@@ -24,5 +24,3 @@ const runScheduleConsumer = async () => {
         },
     });
 };
-
-module.exports = { runScheduleConsumer };

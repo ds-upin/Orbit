@@ -1,5 +1,5 @@
-const { Kafka } = require('kafkajs');
-const { verifyPayment } = require('../handlers/paymentVerification');
+import { Kafka } from 'kafkajs';
+import { verifyPayment } from '../handlers/paymentVerification.js';
 
 const kafka = new Kafka({
     clientId: 'booking-payment-consumer',
@@ -8,12 +8,13 @@ const kafka = new Kafka({
 
 const consumer = kafka.consumer({ groupId: 'booking-payment-group' });
 
-const runPaymentConsumer = async () => {
+export const runPaymentConsumer = async () => {
     await consumer.connect();
     await consumer.subscribe({
         topic: 'payment-topic',
         fromBeginning: false,
     });
+
     await consumer.run({
         eachMessage: async ({ message }) => {
             const parsedMessage = JSON.parse(message.value.toString());
@@ -21,5 +22,3 @@ const runPaymentConsumer = async () => {
         },
     });
 };
-
-module.exports = { runPaymentConsumer };

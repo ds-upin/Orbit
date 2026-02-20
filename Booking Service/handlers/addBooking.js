@@ -1,5 +1,5 @@
-const prisma = require('../prismaClient');
-const jwt = require('jsonwebtoken');
+import prisma from '../prismaClient.js';
+import jwt from 'jsonwebtoken';
 
 const PAYMENT_SECRET = process.env.PAYMENT_JWT_SECRET;
 
@@ -140,4 +140,4 @@ const addBooking = async (call, callback) => {
     }
 };
 
-module.exports = { addBooking };
+export { addBooking };

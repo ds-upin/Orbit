@@ -1,4 +1,4 @@
-const prisma = require('../prismaClient');
+import prisma from '../prismaClient.js';
 
 function getFareForSchedule(schedule) {
     return schedule.fare;
@@ -87,4 +87,4 @@ const verifyPayment = async (data) => {
     }
 };
 
-module.exports = { verifyPayment };
+export { verifyPayment };

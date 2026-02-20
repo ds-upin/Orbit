@@ -1,4 +1,4 @@
-const transporter = require('../mail/transporter');
+import transporter from '../mail/transporter.js';
 
 const bookingEmail = async (message) => {
     try {
@@ -47,7 +47,7 @@ const bookingEmail = async (message) => {
                         <p>Thank you for choosing <strong>Orbit</strong>. Have a safe journey!</p>
 
                         <p style="font-size: 12px; color: gray;">
-                            Session ID: ${session_id} | Schedule ID: ${schedule_id}
+                            Payment ID: ${session_id} | Schedule ID: ${schedule_id}
                         </p>
                     </div>
                 `,
@@ -61,7 +61,7 @@ const bookingEmail = async (message) => {
                 subject: 'Orbit - Payment Update',
                 html: `
                     <div style="font-family: Arial, sans-serif; padding: 20px;">
-                        <h2 style="color: #c0392b;">Payment Unsuccessful</h2>
+                        <h2 style="color: #c0392b;">Booking Unssuccessful</h2>
                         
                         <p>Hi <strong>${name}</strong>,</p>
 
@@ -97,11 +97,11 @@ const bookingEmail = async (message) => {
             });
         }
 
-        console.log(`Booking email sent to ${email}`);
+        //console.log(`Booking email sent to ${email}`);
 
     } catch (error) {
         console.error('Error sending booking email:', error);
     }
 };
 
-module.exports = { bookingEmail };
+export { bookingEmail };

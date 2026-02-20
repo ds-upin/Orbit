@@ -1,7 +1,7 @@
-require('dotenv').config();
+import 'dotenv/config'; 
 
-const { runConsumer } = require('./kafka/consumer');
-const { runBookingConsumer } = require('./kafka/VerificationCodeconsumer');
+import { runConsumer } from './kafka/consumer.js';
+import { runBookingConsumer } from './kafka/VerificationCodeconsumer.js';
 
 runBookingConsumer().catch(console.error);
 runConsumer().catch(console.error);

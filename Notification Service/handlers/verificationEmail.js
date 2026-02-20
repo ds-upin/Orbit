@@ -1,4 +1,4 @@
-const transporter = require('../mail/transporter');
+import transporter from '../mail/transporter.js';
 
 const verificationEmail = async (message) => {
     const payload = JSON.parse(message.value.toString());
@@ -23,4 +23,4 @@ const verificationEmail = async (message) => {
     //console.log(`Verification email sent to ${email}`);
 };
 
-module.exports = { verificationEmail };
+export { verificationEmail };

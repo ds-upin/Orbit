@@ -1,5 +1,5 @@
-const { Kafka } = require('kafkajs');
-const { verificationEmail } = require('../handlers/verificationEmail');
+import { Kafka } from 'kafkajs';
+import { verificationEmail } from '../handlers/verificationEmail.js';
 
 const kafka = new Kafka({
     clientId: 'Orbit-Notification-Service',
@@ -8,7 +8,7 @@ const kafka = new Kafka({
 
 const consumer = kafka.consumer({ groupId: 'email-group' });
 
-const runConsumer = async () => {
+export const runConsumer = async () => {
     await consumer.connect();
 
     await consumer.subscribe({

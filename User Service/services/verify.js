@@ -1,4 +1,4 @@
-const prisma = require('../prismaClient');
+import prisma from '../prismaClient.js';
 
 const verifyUser = async (call, callback) => {
     const { email, code } = call.request;
@@ -60,4 +60,4 @@ const verifyUser = async (call, callback) => {
     }
 };
 
-module.exports = verifyUser;
+export default verifyUser;

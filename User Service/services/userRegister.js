@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt');
-const prisma = require('../prismaClient');
-const { produceEmailCode } = require('../producer');
+import bcrypt from 'bcrypt';
+import prisma from '../prismaClient.js';
+import { produceEmailCode } from '../producer.js';
 
 function generateSixDigitNumber() {
     return Math.floor(100000 + Math.random() * 900000);
@@ -54,4 +54,4 @@ const userRegister = async (call, callback) => {
     }
 };
 
-module.exports = userRegister;
+export default userRegister;

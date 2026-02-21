@@ -1,15 +1,18 @@
-require('dotenv').config();
+import 'dotenv/config';
+import grpc from '@grpc/grpc-js';
+import protoLoader from '@grpc/proto-loader';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
-const path = require('path');
-const fs = require('fs');
+import userLogin from './services/userLogin.js';
+import userRegister from './services/userRegister.js';
+import adminLogin from './services/adminLogin.js';
+import getUser from './services/getUser.js';
+import verifyUser from './services/verify.js';
 
-const userLogin = require('./services/userLogin');
-const userRegister = require('./services/userRegister');
-const adminLogin = require('./services/adminLogin');
-const getUser = require('./services/getUser');
-const verifyUser = require('./services/verify');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const PROTO_PATH = path.join(__dirname, 'user.proto');
 
@@ -24,6 +27,7 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
 const serverKey = fs.readFileSync("certs/user-service.key");
 const serverCert = fs.readFileSync("certs/user-service.crt");
 const caCert = fs.readFileSync("certs/ca.crt");
+
 const creds = grpc.ServerCredentials.createSsl(
     caCert,
     [
@@ -37,8 +41,6 @@ const creds = grpc.ServerCredentials.createSsl(
 
 const userProto = grpc.loadPackageDefinition(packageDefinition).user;
 
-
-
 function main() {
     const server = new grpc.Server();
 
@@ -50,15 +52,11 @@ function main() {
         verifyUser,
     });
 
-    const PORT = process.env.PORT ||'0.0.0.0:50051';
+    const PORT = process.env.PORT || '0.0.0.0:50051';
 
-    server.bindAsync(
-        PORT,
-        creds,
-        () => {
-            console.log(`🚀 gRPC UserService running at ${PORT}`);
-        }
-    );
+    server.bindAsync(PORT, creds, () => {
+        console.log(` gRPC UserService running at ${PORT}`);
+    });
 }
 
 main();

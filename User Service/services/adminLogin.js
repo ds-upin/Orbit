@@ -1,6 +1,6 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const prisma = require('../prismaClient'); // Your shared PrismaClient instance
+import bcrypt from 'bcrypt';
+import jwt from'jsonwebtoken';
+import prisma from '../prismaClient.js'; // Your shared PrismaClient instance
 
 const adminLogin = async (call, callback) => {
     const { email, password } = call.request;
@@ -63,4 +63,4 @@ const adminLogin = async (call, callback) => {
     }
 };
 
-module.exports = adminLogin;
+export default adminLogin;

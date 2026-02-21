@@ -1,6 +1,5 @@
 import prisma from '../prismaClient.js';
 import { Prisma } from '@prisma/client';
-
 import { produceSchedule } from '../producer/schedule.produce.js';
 
 const addSchedule = async (call, callback) => {
@@ -212,7 +211,6 @@ const updateSchedule = async (call, callback) => {
         return callback(null, { status: 500, msg: "Internal server error" });
     }
 };
-
 
 const deleteSchedule = async (call, callback) => {
     try {
@@ -566,5 +564,12 @@ const handleProducer = async (schedule_id, status) => {
     return;
 };
 
-
-export { getScheduledBusesByRoute, addSchedule, updateSchedule, deleteSchedule, getSchedule, getSchedules, getScheduledBuses };
+export { 
+    getScheduledBusesByRoute, 
+    addSchedule, 
+    updateSchedule, 
+    deleteSchedule, 
+    getSchedule, 
+    getSchedules, 
+    getScheduledBuses 
+};

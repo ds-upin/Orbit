@@ -1,6 +1,6 @@
-const jwt = require('jsonwebtoken');
-const prisma = require('../prismaClient');
-const { createCheckoutSession } = require('../createPayment');
+import jwt from 'jsonwebtoken';
+import prisma from '../prismaClient.js';
+import { createCheckoutSession } from '../createPayment.js';
 
 /* 
    1. JWT data is signed by booking service.
@@ -13,15 +13,21 @@ const InitiatePayment = async (call, callback) => {
         const { webtoken, name, email, user_id } = call.request;
         const secret = process.env.PAYMENT_JWT_SECRET;
 
-        const data = jwt.verify(webtoken, secret);
-        const { fare, departure_time, arrival_time, schedule_id, booking_group } = data;
+        // Verify JWT
+        const data = jwt.verify(webtoken, secret, {
+            audience: 'payment',
+            issuer: 'booking-service',
+        });
 
+        const { fare, departure_time, arrival_time, schedule_id, booking_group } = data;
+        console.log(data);
+ 
         if (
             typeof fare !== 'number' ||
             typeof departure_time !== 'string' ||
             typeof arrival_time !== 'string' ||
             typeof schedule_id !== 'number' ||
-            typeof booking_group !=="numer" ||
+            typeof booking_group !== 'number' ||
             fare <= 0
         ) {
             return callback(null, {
@@ -32,18 +38,26 @@ const InitiatePayment = async (call, callback) => {
             });
         }
 
-        const result = await prisma.$queryRaw`
-            SELECT * FROM schedules
-            WHERE id = ${schedule_id}
-            AND departure_time = ${departure_time}
-            AND arrival_time = ${arrival_time}
-        `;
+        // Fetch schedule by primary key
+        const schedule = await prisma.schedules.findUnique({
+            where: { id: schedule_id },
+        });
 
+        if (!schedule) {
+            return callback(null, {
+                status: 400,
+                checkoutUrl: '',
+                sessionId: '',
+                message: 'Bad Request',
+            });
+        }
+
+        // Validate schedule data
         if (
-            !result ||
-            result.length === 0 ||
-            result[0].fare < fare ||
-            fare % result[0].fare !== 0
+            schedule.departure_time.toISOString() !== departure_time ||
+            schedule.arrival_time.toISOString() !== arrival_time ||
+            schedule.fare < fare ||
+            fare % schedule.fare !== 0
         ) {
             return callback(null, {
                 status: 400,
@@ -96,4 +110,4 @@ const InitiatePayment = async (call, callback) => {
     }
 };
 
-module.exports = { InitiatePayment };
+export { InitiatePayment };

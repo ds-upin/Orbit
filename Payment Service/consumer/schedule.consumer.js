@@ -1,5 +1,5 @@
-const { Kafka } = require('kafkajs');
-const { updateSchedule } = require('../handlers/updateSchedule');
+import { Kafka } from 'kafkajs';
+import { updateSchedule } from '../handlers/updateSchedule.js';
 
 const kafka = new Kafka({
     clientId: 'payment-schedule-consumer',
@@ -24,4 +24,4 @@ const runScheduleConsumer = async () => {
     });
 };
 
-module.exports = { runScheduleConsumer };
+export { runScheduleConsumer };

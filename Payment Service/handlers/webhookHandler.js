@@ -1,5 +1,5 @@
-const prisma = require('../prismaClient')
-const { paymentDataVerification } = require('../producer/paymentVerification')
+import prisma from '../prismaClient.js';
+import { paymentDataVerification } from '../producer/paymentVerification.js';
 
 const ConfirmPayment = async (call, callback) => {
     try {
@@ -33,4 +33,4 @@ const ConfirmPayment = async (call, callback) => {
     }
 };
 
-module.exports = { ConfirmPayment };
+export { ConfirmPayment };

@@ -21,7 +21,7 @@ model schedules {
   fare           Int
   departure_time DateTime @db.Timestamptz(6)
   arrival_time   DateTime @db.Timestamptz(6)
-  id             Int      @unique
+  id             Int      @id @unique
 
   @@ignore
 }

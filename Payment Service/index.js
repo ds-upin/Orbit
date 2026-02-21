@@ -1,16 +1,22 @@
-require('dotenv').config()
+import 'dotenv/config';
+import grpc from '@grpc/grpc-js';
+import protoLoader from '@grpc/proto-loader';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
-const path = require('path')
+import { InitiatePayment } from './handlers/initiatePayment.js';
+import { ConfirmPayment } from './handlers/webhookHandler.js';
+import { runScheduleConsumer } from './consumer/schedule.consumer.js';
 
-const { InitiatePayment } = require('./handlers/initiatePayment');
-const { ConfirmPayment } = require('./handlers/webhookHandler');
-
-const { runScheduleConsumer } = require('./consumer/schedule.consumer');
+// Run consumer immediately
 runScheduleConsumer().catch(console.error);
 
-const proto_path = path.join(__dirname,'payment.proto');
+// __dirname replacement for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const proto_path = path.join(__dirname, 'payment.proto');
 
 const packageDefinition = protoLoader.loadSync(proto_path, {
     keepCase: true,
@@ -20,21 +26,35 @@ const packageDefinition = protoLoader.loadSync(proto_path, {
     oneofs: true,
 });
 
+const serverKey = fs.readFileSync("certs/payment-service.key");
+const serverCert = fs.readFileSync("certs/payment-service.crt");
+const caCert = fs.readFileSync("certs/ca.crt");
+
+const creds = grpc.ServerCredentials.createSsl(
+    caCert,
+    [
+        {
+            private_key: serverKey,
+            cert_chain: serverCert,
+        },
+    ],
+    true
+);
+
 const payment_proto = grpc.loadPackageDefinition(packageDefinition).payment;
 
 function main() {
     const PORT = process.env.GRPC_SERVER_ADDR || "0.0.0.0:50054";
     const server = new grpc.Server();
-    server.addService(payment_proto.PaymentService.service,{
+
+    server.addService(payment_proto.PaymentService.service, {
         InitiatePayment,
         ConfirmPayment,
     });
-    server.bindAsync(
-        PORT,
-        grpc.ServerCredentials.createInsecure(),
-        ()=>{
-            console.log(`gRPC PaymentService running at ${PORT}`);
-        }
-    );
+
+    server.bindAsync(PORT, creds, () => {
+        console.log(`gRPC PaymentService running at ${PORT}`);
+    });
 }
+
 main();

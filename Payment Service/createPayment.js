@@ -1,4 +1,4 @@
-const stripe = require('./stripeClient');
+import stripe from './stripeClient.js';
 
 const createCheckoutSession = async ({
     amount,
@@ -53,4 +53,4 @@ const createCheckoutSession = async ({
     }
 };
 
-module.exports = { createCheckoutSession };
+export { createCheckoutSession };

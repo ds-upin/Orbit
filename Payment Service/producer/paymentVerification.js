@@ -1,4 +1,4 @@
-const { Kafka } = require('kafkajs');
+import { Kafka } from 'kafkajs';
 
 const kafka = new Kafka({
     cientId: 'Orbit-Payment-Verificatio-Service',
@@ -25,4 +25,4 @@ const paymentDataVerification = async (data) => {
     }
 };
 
-module.exports = { paymentDataVerification };
+export { paymentDataVerification };

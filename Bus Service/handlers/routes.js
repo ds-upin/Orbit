@@ -1,4 +1,4 @@
-const prisma = require('../prismaClient');
+import prisma from '../prismaClient.js';
 
 const addRoute = async (call, callback) => {
     const { source, destination, distance } = call.request;
@@ -115,4 +115,4 @@ const getRoute = async (call, callback) => {
     }
 };
 
-module.exports = { addRoute, getRoute }
+export { addRoute, getRoute }

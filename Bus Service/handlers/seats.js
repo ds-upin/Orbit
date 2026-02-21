@@ -1,4 +1,4 @@
-const prisma = require('../prismaClient');
+import prisma from '../prismaClient.js';
 // Done
 const addSeat = async (call, callback) => {
     const { seat_number, model_id } = call.request;
@@ -67,4 +67,4 @@ const deleteSeat = async (call, callback) => {
     return;
 };
 
-module.exports =  { addSeat, deleteSeat};
+export { addSeat, deleteSeat};

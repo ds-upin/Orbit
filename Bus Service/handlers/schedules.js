@@ -1,7 +1,7 @@
-const prisma = require('../prismaClient');
-const { Prisma } = require('@prisma/client');
+import prisma from '../prismaClient.js';
+import { Prisma } from '@prisma/client';
 
-const { produceSchedule } = require('../producer/schedule.produce');
+import { produceSchedule } from '../producer/schedule.produce.js';
 
 const addSchedule = async (call, callback) => {
     try {
@@ -567,4 +567,4 @@ const handleProducer = async (schedule_id, status) => {
 };
 
 
-module.exports = { getScheduledBusesByRoute, addSchedule, updateSchedule, deleteSchedule, getSchedule, getSchedules, getScheduledBuses };
+export { getScheduledBusesByRoute, addSchedule, updateSchedule, deleteSchedule, getSchedule, getSchedules, getScheduledBuses };

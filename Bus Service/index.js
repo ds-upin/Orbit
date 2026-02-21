@@ -1,15 +1,18 @@
-require('dotenv').config();
+import 'dotenv/config';
+import grpc from '@grpc/grpc-js';
+import protoLoader from '@grpc/proto-loader';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-const grpc = require('@grpc/grpc-js');
-const protoLoader = require('@grpc/proto-loader');
-const path = require('path');
+import * as bus_controller from './handlers/buses.js';
+import * as model_controller from './handlers/model.js';
+import * as route_controller from './handlers/routes.js';
+import * as seat_controller from './handlers/seats.js';
+import * as schedule_controller from './handlers/schedules.js';
 
-const bus_controller = require('./handlers/buses');
-const model_controller = require('./handlers/model');
-const route_controller = require('./handlers/routes');
-const seat_controller = require('./handlers/seats');
-const schedule_controller = require('./handlers/schedules');
- 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const proto_path = path.join(__dirname, 'bus_service.proto');
 
 const packageDefinition = protoLoader.loadSync(proto_path, {
@@ -24,6 +27,7 @@ const bus_service_proto = grpc.loadPackageDefinition(packageDefinition).bus_serv
 
 function main() {
     const server = new grpc.Server();
+
     server.addService(bus_service_proto.BusService.service, {
         GetBus: bus_controller.getBus,
         GetBuses: bus_controller.getBuses,
@@ -40,6 +44,7 @@ function main() {
 
         AddRoute: route_controller.addRoute,
         GetRoute: route_controller.getRoute,
+
         AddSchedule: schedule_controller.addSchedule,
         UpdateSchedule: schedule_controller.updateSchedule,
         DeleteSchedule: schedule_controller.deleteSchedule,

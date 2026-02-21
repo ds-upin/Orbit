@@ -1,4 +1,4 @@
-const prisma = require('../prismaClient');
+import prisma from '../prismaClient.js';
 
 const getModels = async (call, callback) => {
     const { limit, skip } = call.request;
@@ -118,4 +118,4 @@ const addModel = async (call, callback) => {
     }
 };
 
-module.exports = { getModels, getModel, addModel };
+export { getModels, getModel, addModel };

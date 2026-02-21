@@ -1,4 +1,4 @@
-const prisma = require('../prismaClient');   
+import prisma from '../prismaClient.js';   
 
 const getBus = async (call, callback) => {
     try {
@@ -319,4 +319,4 @@ const deleteBus = async (call, callback) => {
     }
 };
 
-module.exports = { getBus, getBuses, addBus, updateBus, deleteBus };
+export { getBus, getBuses, addBus, updateBus, deleteBus };

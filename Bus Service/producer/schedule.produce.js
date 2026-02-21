@@ -1,4 +1,4 @@
-const { Kafka } = require('kafkajs')
+import { Kafka } from 'kafkajs';
 
 const kafka = new Kafka({
     clientId: 'schedule-producer',
@@ -24,4 +24,4 @@ const produceSchedule = async ({ data }) => {
     }
 }
 
-module.exports = { produceSchedule };
+export { produceSchedule };
